@@ -11,7 +11,7 @@ module Commands
       version = input.version
 
       repo.pull_requests.each do |pull_request|
-        next if version.pr && pull_request.id < version.pr
+        next if pull_request.id < version.pr.to_i
 
         out << pull_request.as_json
 
