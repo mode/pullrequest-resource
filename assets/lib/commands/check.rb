@@ -11,13 +11,12 @@ module Commands
       version = input.version
 
       repo.pull_requests.each do |pull_request|
-        next if pull_request.id < version.pr.to_i
-
         out << pull_request.as_json
 
+        # Append versions for build request comments
         pull_request.trigger_comment_ids.each do |comment_id|
           payload = pull_request.as_json
-          payload[:comment] = comment_id
+          payload[:comment] = comment_id.to_s
           out << payload
         end
       end
