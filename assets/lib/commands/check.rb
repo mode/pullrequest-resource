@@ -7,7 +7,22 @@ require_relative '../repository'
 module Commands
   class Check < Commands::Base
     def output
-      repo.pull_requests
+      out = []
+      version = input.version
+
+      repo.pull_requests.each do |pull_request|
+        next if version.pr && pull_request.id < version.pr
+
+        out << pull_request.as_json
+
+        pull_request.trigger_comment_ids.each do |comment_id|
+          payload = pull_request.as_json
+          payload[:comment] = comment_id
+          out << payload
+        end
+      end
+
+      return out
     end
 
     private
